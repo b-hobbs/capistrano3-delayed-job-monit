@@ -1,0 +1,9 @@
+# Housed under your config/deploy/templates folder, be sure to update the rake task if this is moved elsewhere
+<% (0..3).each_with_index do |process, idx| %>
+check process <%= monit_service_name(idx) %>
+  with pidfile <%= fetch(:deploy_to) %>/shared/tmp/pids/delayed_job.<%= idx %>.pid
+  start program = "RAILS_ENV=<%= fetch(:rails_env) %> <%= delayed_job_bin %> <%= delayed_job_args %> start"
+    as uid rails and gid rails
+  stop program = "RAILS_ENV=<%= fetch(:rails_env) %> <%= delayed_job_bin %> <%= delayed_job_args %> stop"
+    as uid rails and gid rails
+<% end %>
